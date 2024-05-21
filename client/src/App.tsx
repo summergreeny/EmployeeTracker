@@ -32,7 +32,7 @@ function App() {
           <Route path="/roles" element={<Role />} />
           <Route
             path="/department/:departmentId"
-            element={<IntroductionPage id={0} />}
+            element={<IntroductionPage />}
           />
         </Route>
       </Routes>

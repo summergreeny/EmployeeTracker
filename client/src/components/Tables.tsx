@@ -9,6 +9,8 @@ import { FileExport } from "./FileExport";
 import { EditInfo } from "../components/EditInfo";
 import { contentInfoProps } from "../components/EditInfo";
 import { Link } from "react-router-dom";
+import { Pagination } from "./Pagination";
+
 // This component is used to display tables of employees, departments, and roles
 
 type EmployeeInfo = {
@@ -37,6 +39,22 @@ export function Tables({ header, data, tableName }: TablesProps) {
     null
   );
   const [info, setInfo] = useState<contentInfoProps | null>(null);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const deleteEmployee = (id: number) => {
     axios
@@ -144,7 +162,103 @@ export function Tables({ header, data, tableName }: TablesProps) {
           </thead>
           <tbody>
             {tableName === "Employees"
-              ? data.map((item, index) => (
+              ? (rowsPerPage > 0
+                  ? data.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : data
+                ).map((item) => (
+                  <tr key={item.id}>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      {item.name}
+                    </td>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      {item.email}
+                    </td>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      {item.phone_number}
+                    </td>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      {item.department_name}
+                    </td>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      {item.role_name}
+                    </td>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      {item.employStatus}
+                    </td>
+                    <td
+                      style={{
+                        backgroundColor: item.is_admin ? "yellow" : "inherit",
+                      }}
+                    >
+                      <ButtonGroup>
+                        <Button
+                          variant="warning"
+                          onClick={() => handleEdit(item.id)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
+                      </ButtonGroup>
+                    </td>
+                  </tr>
+                ))
+              : (rowsPerPage > 0
+                  ? data.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : data
+                ).map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <Link to={`/department/${item.id}`}>{item.name}</Link>
+                    </td>
+                    <td>{item.description}</td>
+                    <td>{item.employee_count}</td>
+                    <td>
+                      <Button
+                        variant="warning"
+                        onClick={() => handleEditInfo(item.id)}
+                      >
+                        Edit
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+
+            {/* data.map((item, index) => (
                   <tr key={index}>
                     <td
                       style={{
@@ -231,8 +345,21 @@ export function Tables({ header, data, tableName }: TablesProps) {
                       </Button>
                     </td>
                   </tr>
-                ))}
+                ))} */}
           </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={header.length} style={{ textAlign: "right" }}>
+                <Pagination
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  length={data.length}
+                  handleChangePage={handleChangePage}
+                  handleChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+              </td>
+            </tr>
+          </tfoot>
         </Table>
       </div>
       <EditInfo

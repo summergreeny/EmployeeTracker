@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { CompanyContext } from "../context/CompanyContext.tsx";
-import img from "../../public/office.jpg";
 
 export function IntroductionPage() {
   const { departmentId } = useParams();
@@ -76,6 +75,12 @@ export function IntroductionPage() {
           </Col>
           <Col md={8}>
             <Row>
+              {departmentEmployees.length === 0 && (
+                <div>
+                  Sorry this is a new apartment. No teammembers has been
+                  assigned yet.
+                </div>
+              )}
               {departmentEmployees.map((member, index) => (
                 <Col
                   key={index}

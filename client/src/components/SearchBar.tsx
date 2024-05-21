@@ -14,11 +14,8 @@ export function SearchBar({ employeeData, setTableData }: SearchBarProps) {
       const searchQuery = search.toLowerCase().split(" ");
 
       const filteredEmployees = employeeData.filter((employee) => {
-        // Check if any part of the employee's data includes any part of the search query
         return searchQuery.every((term) => {
-          // Check if any of the employee's properties include the search term
           return Object.values(employee).some((value) => {
-            // Convert the value to lower case and check if it includes the search term
             return String(value).toLowerCase().includes(term);
           });
         });
