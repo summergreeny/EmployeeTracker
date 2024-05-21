@@ -1,0 +1,27 @@
+.navbar-container {
+  margin-bottom: 20px;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007ee5;
+}
+
+.navbar-brand a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-brand a:hover {
+  color: #0056b3;
+}
+
+.nav-links .nav-link {
+  margin-right: 15px;
+}
+
+.navbar-text {
+  margin-left: 15px;
+  font-weight: bold;
+}
