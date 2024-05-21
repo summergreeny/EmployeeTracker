@@ -8,6 +8,7 @@ import { FileUpload } from "./FileUpload";
 import { FileExport } from "./FileExport";
 import { EditInfo } from "../components/EditInfo";
 import { contentInfoProps } from "../components/EditInfo";
+import { Link } from "react-router-dom";
 // This component is used to display tables of employees, departments, and roles
 
 type EmployeeInfo = {
@@ -209,10 +210,16 @@ export function Tables({ header, data, tableName }: TablesProps) {
                     </td>
                   </tr>
                 ))
-              : //TODO: Add the same logic for departments and roles
-                data.map((item, index) => (
+              : data.map((item, index) => (
                   <tr key={index}>
-                    <td>{item.name}</td>
+                    {tableName === "Departments" && (
+                      <>
+                        <td>
+                          <Link to={`/department/${item.id}`}>{item.name}</Link>
+                        </td>
+                      </>
+                    )}
+                    {tableName === "Roles" && <td>{item.name}</td>}
                     <td>{item.description}</td>
                     <td>{item.employee_count}</td>
                     <td>

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Tables } from "../components/Tables";
 import { CompanyContext } from "../context/CompanyContext";
+import { AddNewBtn } from "../components/AddNewBtn";
 
 export function Department() {
   const header = ["Department", "Description", "Employment Count", "Actions"];

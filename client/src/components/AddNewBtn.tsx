@@ -16,6 +16,7 @@ export function AddNewBtn({ handleClickButton, text }: AddNewBtnProps) {
         padding: "10px 20px",
         transition: "background-color 0.3s, color 0.3s",
         right: "180px",
+        bottom: "7px",
       }}
       onClick={handleClickButton} // Removed the arrow function here
     >

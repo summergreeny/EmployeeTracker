@@ -9,6 +9,8 @@ import { AuthContext } from "./context/AuthContext";
 import { ProtectedRoute } from "./utilities/ProtectedRoute.tsx";
 import { Department } from "./pages/Department.tsx";
 import { Register } from "./pages/Register.tsx";
+import { IntroductionPage } from "./pages/IntroductionPage.tsx";
+
 function App() {
   const authContext = useContext(AuthContext);
 
@@ -28,6 +30,10 @@ function App() {
           <Route path="/employees" element={<Employee />} />
           <Route path="/departments" element={<Department />} />
           <Route path="/roles" element={<Role />} />
+          <Route
+            path="/department/:departmentId"
+            element={<IntroductionPage id={0} />}
+          />
         </Route>
       </Routes>
     </div>
