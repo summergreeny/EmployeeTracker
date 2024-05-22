@@ -19,7 +19,7 @@ type ProfileProps = {
 
 export function ProfileMenu({ isOpen, close }: ProfileProps) {
   const authContext = useContext(AuthContext);
-  console.log(isOpen);
+  // console.log(isOpen);
 
   if (!authContext) {
     throw new Error("AuthContext must be used within an AuthProvider");

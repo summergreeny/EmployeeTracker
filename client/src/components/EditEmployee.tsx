@@ -51,7 +51,7 @@ export function EditEmployee({
     }
   }, [employee]);
 
-  console.log(employeeInfo);
+  // console.log(employeeInfo);
 
   const context = useContext(CompanyContext);
 

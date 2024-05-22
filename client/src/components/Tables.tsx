@@ -28,9 +28,30 @@ type TablesProps = {
   header: string[];
   data: EmployeeInfo[] | any[];
   tableName: string;
+  page: number;
+  rowsPerPage: number;
+  length: number;
+  handleChangePage: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => void;
+  handleChangeRowsPerPage: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 };
 
-export function Tables({ header, data, tableName }: TablesProps) {
+export function Tables({
+  header,
+  data,
+  tableName,
+  page,
+  rowsPerPage,
+  length,
+  handleChangePage,
+  handleChangeRowsPerPage,
+}: TablesProps) {
+  console.log(header, data, tableName, page, rowsPerPage, length);
+
   const [showWarning, setShowWarning] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showEditInfo, setShowEditInfo] = useState(false);
@@ -39,28 +60,11 @@ export function Tables({ header, data, tableName }: TablesProps) {
     null
   );
   const [info, setInfo] = useState<contentInfoProps | null>(null);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const deleteEmployee = (id: number) => {
     axios
       .delete(`http://127.0.0.1:5000/admin/employees/${id}`)
       .then((res) => {
-        console.log(res.data);
         window.location.reload(); // Refresh the page after successful deletion
       })
       .catch((error) => {
@@ -82,7 +86,6 @@ export function Tables({ header, data, tableName }: TablesProps) {
   };
 
   const handleEditInfo = (id: number) => {
-    console.log("Edit info clicked");
     console.log(id);
 
     if (tableName === "Departments") {
@@ -162,14 +165,8 @@ export function Tables({ header, data, tableName }: TablesProps) {
           </thead>
           <tbody>
             {tableName === "Employees"
-              ? (rowsPerPage > 0
-                  ? data.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                  : data
-                ).map((item) => (
-                  <tr key={item.id}>
+              ? data.map((item) => (
+                  <tr key={`${item.email}-${tableName}`}>
                     <td
                       style={{
                         backgroundColor: item.is_admin ? "yellow" : "inherit",
@@ -235,7 +232,7 @@ export function Tables({ header, data, tableName }: TablesProps) {
                   </tr>
                 ))
               : (rowsPerPage > 0
-                  ? data.slice(
+                  ? Object.values(data).slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
                     )
@@ -257,95 +254,6 @@ export function Tables({ header, data, tableName }: TablesProps) {
                     </td>
                   </tr>
                 ))}
-
-            {/* data.map((item, index) => (
-                  <tr key={index}>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      {item.name}
-                    </td>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      {item.email}
-                    </td>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      {item.phone_number}
-                    </td>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      {item.department_name}
-                    </td>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      {item.role_name}
-                    </td>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      {item.employStatus}
-                    </td>
-                    <td
-                      style={{
-                        backgroundColor: item.is_admin ? "yellow" : "inherit",
-                      }}
-                    >
-                      <ButtonGroup>
-                        <Button
-                          variant="warning"
-                          onClick={() => handleEdit(item.id)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          Delete
-                        </Button>
-                      </ButtonGroup>
-                    </td>
-                  </tr>
-                ))
-              : data.map((item, index) => (
-                  <tr key={index}>
-                    {tableName === "Departments" && (
-                      <>
-                        <td>
-                          <Link to={`/department/${item.id}`}>{item.name}</Link>
-                        </td>
-                      </>
-                    )}
-                    {tableName === "Roles" && <td>{item.name}</td>}
-                    <td>{item.description}</td>
-                    <td>{item.employee_count}</td>
-                    <td>
-                      <Button
-                        variant="warning"
-                        onClick={() => handleEditInfo(item.id)}
-                      >
-                        Edit
-                      </Button>
-                    </td>
-                  </tr>
-                ))} */}
           </tbody>
           <tfoot>
             <tr>
@@ -353,10 +261,10 @@ export function Tables({ header, data, tableName }: TablesProps) {
                 <Pagination
                   page={page}
                   rowsPerPage={rowsPerPage}
-                  length={data.length}
+                  length={length}
                   handleChangePage={handleChangePage}
                   handleChangeRowsPerPage={handleChangeRowsPerPage}
-                />
+                />{" "}
               </td>
             </tr>
           </tfoot>

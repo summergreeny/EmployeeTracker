@@ -29,6 +29,12 @@ type companyContextProps = {
   departments: Department[];
   roles: Role[];
   employees: Employee[];
+  dataLength: number;
+  getEmployeeByPages: (props: {
+    page: number;
+    perPage: number;
+    search: string[] | [];
+  }) => any;
 };
 
 export const CompanyContext = createContext<companyContextProps | undefined>(
@@ -43,6 +49,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [employees, setEmployees] = useState([]);
+  const [dataLength, setDataLength] = useState(0);
 
   const storedUserInfoString = localStorage.getItem("userInfo");
   const storedUserInfo = storedUserInfoString
@@ -51,6 +58,25 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   const is_admin = storedUserInfo?.is_admin ?? false;
   const params = {
     isAdmin: is_admin,
+  };
+
+  type getEmployeeByPagesProps = {
+    page: number;
+    perPage: number;
+    search: string[] | [];
+  };
+  const getEmployeeByPages = ({
+    page,
+    perPage,
+    search,
+  }: getEmployeeByPagesProps) => {
+    return axios.get(`http://127.0.0.1:5000/admin/get_employees_by_pages`, {
+      params: {
+        page,
+        perPage,
+        search: search,
+      },
+    });
   };
 
   useEffect(() => {
@@ -73,19 +99,26 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
       });
 
     axios
-      .get("http://127.0.0.1:5000/admin/employees", { params })
+      .get(`http://127.0.0.1:5000/admin/get_employees_by_pages`, {
+        params: {
+          page: 0,
+          perPage: 10,
+          search: [],
+        },
+      })
       .then((res) => {
-        setEmployees(res.data);
+        setEmployees(res.data.data);
+        setDataLength(res.data.total_records);
         console.log(res.data); // Log departments data after it has been set
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   }, []);
-
-  console.log(departments);
   return (
-    <CompanyContext.Provider value={{ departments, roles, employees }}>
+    <CompanyContext.Provider
+      value={{ departments, roles, employees, getEmployeeByPages, dataLength }}
+    >
       {children}
     </CompanyContext.Provider>
   );

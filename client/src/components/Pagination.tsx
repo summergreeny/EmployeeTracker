@@ -30,32 +30,30 @@ export function Pagination({
   handleChangeRowsPerPage,
 }: PaginationProps) {
   return (
-    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-      <CustomTablePagination
-        rowsPerPageOptions={[10, 25, { label: "All", value: -1 }]}
-        colSpan={3}
-        count={length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        slotProps={{
-          select: {
-            "aria-label": "Rows per page",
+    <CustomTablePagination
+      rowsPerPageOptions={[10, 25, { label: "All", value: -1 }]}
+      colSpan={3}
+      count={length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      slotProps={{
+        select: {
+          "aria-label": "Rows per page",
+        },
+        actions: {
+          showFirstButton: true,
+          showLastButton: true,
+          slots: {
+            firstPageIcon: FirstPageRoundedIcon,
+            lastPageIcon: LastPageRoundedIcon,
+            nextPageIcon: ChevronRightRoundedIcon,
+            backPageIcon: ChevronLeftRoundedIcon,
           },
-          actions: {
-            showFirstButton: true,
-            showLastButton: true,
-            slots: {
-              firstPageIcon: FirstPageRoundedIcon,
-              lastPageIcon: LastPageRoundedIcon,
-              nextPageIcon: ChevronRightRoundedIcon,
-              backPageIcon: ChevronLeftRoundedIcon,
-            },
-          },
-        }}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </div>
+        },
+      }}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
   );
 }
 
