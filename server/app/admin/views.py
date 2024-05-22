@@ -1,5 +1,4 @@
-from flask import Blueprint, jsonify, abort, request, redirect, render_template, url_for, Response
-from flask_login import current_user, login_required
+from flask import jsonify, request,Response
 from sqlalchemy import and_
 from app import db
 from app.models import Department, Role, Employee
@@ -9,31 +8,33 @@ from werkzeug.utils import secure_filename
 
 from . import admin
 
-def check_isAdmin(is_admin):
-    if not is_admin or is_admin.lower() != 'true':
-        abort(403)
+@admin.route('/get_employees_by_departments', methods=['GET'])
+def get_employee_by_departments():
+    print("get_employee_by_departments")
+    department = request.args.get('department_id')
+    employees = Employee.query.filter_by(department_id=department).all()
+    return jsonify([e.to_dict() for e in employees]), 200
 
-@admin.route('/departments', methods=['GET'])
-# @login_required
-def list_departments():
-    check_isAdmin(request.args.get('isAdmin'))
-    departments = Department.query.all()
-    departments_data = [department.to_dict() for department in departments]
-    return departments_data, 200
+    
 
-@admin.route('/roles', methods=['GET'])
-def list_roles():
-    check_isAdmin(request.args.get('isAdmin'))
-    roles = Role.query.all()
-    roles_data = [role.to_dict() for role in roles]
-    return roles_data, 200
+# paginate method from SQLAlchemy to handle pagination directly in the query
+@admin.route('/get_info_by_pages', methods=['GET'])
+def get_info_by_pages():
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('perPage', 10))
+    info_content = request.args.get('infoContent')
 
-@admin.route('/employees', methods=['GET'])
-def list_employees():
-    check_isAdmin(request.args.get('isAdmin'))
-    employees = Employee.query.all()
-    employees_data = [e.to_dict() for e in employees]
-    return employees_data, 200
+    if info_content == 'departments':
+            paginated_departments = Department.query.paginate(page=page, per_page=per_page, error_out=False)
+            departments_data = [d.to_dict() for d in paginated_departments.items]
+            total_records = paginated_departments.total
+            return jsonify({"data": departments_data, "total_records":total_records}), 200
+    elif info_content == 'roles':
+            paginated_roles = Role.query.paginate(page=page, per_page=per_page, error_out=False)
+            roles_data = [r.to_dict() for r in paginated_roles.items]
+            total_records = paginated_roles.total
+            return jsonify({"data": roles_data, "total_records": total_records}), 200
+        
 
 @admin.route('/get_employees_by_pages', methods=['GET'])
 def get_employees_by_pages():
@@ -41,8 +42,6 @@ def get_employees_by_pages():
     per_page = int(request.args.get('perPage', 10))
     search_string = request.args.get('search', '')  # Get the search string
     search_terms = search_string.split(',') if search_string else [] 
-    print(search_terms)
-    print("******************")
 
     filter_condition=[]
     for each in search_terms:
@@ -58,32 +57,14 @@ def get_employees_by_pages():
     .join(Department, Employee.department_id == Department.id)\
     .join(Role, Employee.role_id == Role.id)\
     .filter(and_(*filter_condition)).all()
-    print("Filtered employees:")
-    print(filtered_employees)
+
     total_records = len(filtered_employees)
 
     start_index = (page - 1) * per_page if page >= 1 else 0 
     end_index = start_index + per_page
-    print(start_index, end_index)
     paginated_employees = filtered_employees[start_index:end_index]
     employees_data = [e.to_dict() for e in paginated_employees]
     return jsonify({"data": employees_data, "total_records":total_records}), 200
-
-
-
-
-    
-
-
-
-
-
-        
-
-
-
-
-
 
 
 @admin.route('/employees/<int:employee_id>', methods=['DELETE'])
@@ -132,7 +113,6 @@ def update_employee(employee_id):
     
     db.session.commit()
     return jsonify({'message': 'Employee updated successfully'}), 200
-
 
 @admin.route('/newemployees', methods=['POST'])
 def add_employee():

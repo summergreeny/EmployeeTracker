@@ -65,7 +65,7 @@ export function Tables({
     axios
       .delete(`http://127.0.0.1:5000/admin/employees/${id}`)
       .then((res) => {
-        window.location.reload(); // Refresh the page after successful deletion
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error deleting employee:", error);
@@ -231,13 +231,7 @@ export function Tables({
                     </td>
                   </tr>
                 ))
-              : (rowsPerPage > 0
-                  ? Object.values(data).slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                  : data
-                ).map((item) => (
+              : data.map((item) => (
                   <tr key={item.id}>
                     <td>
                       <Link to={`/department/${item.id}`}>{item.name}</Link>

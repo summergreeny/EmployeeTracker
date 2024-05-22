@@ -2,7 +2,7 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 
-type Department = {
+type DepartmentType = {
   id: number;
   name: string;
   description: string;
@@ -26,7 +26,7 @@ export type Employee = {
 };
 
 type companyContextProps = {
-  departments: Department[];
+  departments: DepartmentType[];
   roles: Role[];
   employees: Employee[];
   dataLength: number;
@@ -34,6 +34,11 @@ type companyContextProps = {
     page: number;
     perPage: number;
     search: string[] | [];
+  }) => any;
+  getInfoByPages: (props: {
+    page: number;
+    perPage: number;
+    infoContent: string;
   }) => any;
 };
 
@@ -46,9 +51,9 @@ interface CompanyProviderProps {
 }
 
 export function CompanyProvider({ children }: CompanyProviderProps) {
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [departments, setDepartments] = useState<DepartmentType[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [dataLength, setDataLength] = useState(0);
 
   const storedUserInfoString = localStorage.getItem("userInfo");
@@ -70,8 +75,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     perPage,
     search,
   }: getEmployeeByPagesProps) => {
-    console.log("This is getEmployeeByPages");
-    console.log(page, perPage, search);
     const searchString = search.join(",");
     return axios.get(`http://127.0.0.1:5000/admin/get_employees_by_pages`, {
       params: {
@@ -82,20 +85,44 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     });
   };
 
+  type getInfoByPagesProps = {
+    page: number;
+    perPage: number;
+    infoContent: string;
+  };
+
+  const getInfoByPages = ({
+    page,
+    perPage,
+    infoContent,
+  }: getInfoByPagesProps) => {
+    return axios.get("http://127.0.0.1:5000/admin/get_info_by_pages", {
+      params: {
+        page,
+        perPage,
+        infoContent,
+      },
+    });
+  };
+
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/admin/departments", { params })
+      .get("http://127.0.0.1:5000/admin/get_info_by_pages", {
+        params: { page: 0, perPage: 10, infoContent: "departments" },
+      })
       .then((res) => {
-        setDepartments(res.data);
+        setDepartments(res.data.data);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
 
     axios
-      .get("http://127.0.0.1:5000/admin/roles", { params })
+      .get("http://127.0.0.1:5000/admin/get_info_by_pages", {
+        params: { page: 0, perPage: 10, infoContent: "roles" },
+      })
       .then((res) => {
-        setRoles(res.data);
+        setRoles(res.data.data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -112,15 +139,23 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
       .then((res) => {
         setEmployees(res.data.data);
         setDataLength(res.data.total_records);
-        console.log(res.data); // Log departments data after it has been set
+        console.log(res.data); // Log employees data after it has been set
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   }, []);
+
   return (
     <CompanyContext.Provider
-      value={{ departments, roles, employees, getEmployeeByPages, dataLength }}
+      value={{
+        departments,
+        roles,
+        employees,
+        getEmployeeByPages,
+        getInfoByPages,
+        dataLength,
+      }}
     >
       {children}
     </CompanyContext.Provider>

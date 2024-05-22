@@ -1,27 +1,34 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { CompanyContext } from "../context/CompanyContext.tsx";
+import { CompanyContext, Employee } from "../context/CompanyContext.tsx";
+import axios from "axios";
 
 export function IntroductionPage() {
   const { departmentId } = useParams();
+  const [departmentEmployees, setDepartmentEmployees] = useState([]);
+  const context = useContext(CompanyContext);
+  if (!context) {
+    throw new Error("Department must be used within a CompanyProvider");
+  }
+  const { departments } = context;
 
   const id = departmentId ? parseInt(departmentId, 10) : undefined;
-
-  const companyContext = useContext(CompanyContext);
-  if (!companyContext) {
-    throw new Error("AuthContext must be used within an AuthProvider");
-  }
-
-  const { departments, employees } = companyContext;
   const currentDepartment = departments.find(
     (department) => department.id === id
   );
+  console.log("currentDepartment", id);
 
-  const departmentEmployees = employees.filter(
-    (e) => e.department_name === currentDepartment?.name
-  );
-  console.log(departmentEmployees);
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/admin/get_employees_by_departments", {
+        params: { department_id: id },
+      })
+      .then((res) => {
+        setDepartmentEmployees(res.data);
+        console.log("departmentEmployees", departmentEmployees);
+      });
+  }, []);
 
   return (
     <div
@@ -75,20 +82,22 @@ export function IntroductionPage() {
           </Col>
           <Col md={8}>
             <Row>
-              {departmentEmployees.length === 0 && (
-                <div>
-                  Sorry this is a new apartment. No teammembers has been
-                  assigned yet.
-                </div>
-              )}
-              {departmentEmployees.map((member, index) => (
+              {departmentEmployees.length === 0 &&
+                (console.log("departmentEmployees render", departmentEmployees),
+                (
+                  <div>
+                    Sorry this is a new apartment. No teammembers has been
+                    assigned yet.
+                  </div>
+                ))}
+              {departmentEmployees.map((member: Employee, index) => (
                 <Col
                   key={index}
                   md={4}
                   className="d-flex flex-column align-items-center mb-4"
                 >
                   <Image
-                    src={img}
+                    src={`../../public/office.jpg`}
                     roundedCircle
                     className="mb-2"
                     style={{ width: "80px", height: "80px" }}

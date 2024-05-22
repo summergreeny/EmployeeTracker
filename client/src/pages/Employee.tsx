@@ -95,7 +95,7 @@ export function Employee() {
 
     // Fetch data for the first page with the new rowsPerPage value
     getEmployeeByPages({
-      page: 0,
+      page: page,
       perPage: rowsPerPage,
       search: search.toLowerCase().split(" "),
     })
