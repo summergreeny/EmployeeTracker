@@ -56,14 +56,14 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [dataLength, setDataLength] = useState(0);
 
-  const storedUserInfoString = localStorage.getItem("userInfo");
-  const storedUserInfo = storedUserInfoString
-    ? JSON.parse(storedUserInfoString)
-    : {};
-  const is_admin = storedUserInfo?.is_admin ?? false;
-  const params = {
-    isAdmin: is_admin,
-  };
+  // const storedUserInfoString = localStorage.getItem("userInfo");
+  // const storedUserInfo = storedUserInfoString
+  //   ? JSON.parse(storedUserInfoString)
+  //   : {};
+  // const is_admin = storedUserInfo?.is_admin ?? false;
+  // const params = {
+  //   isAdmin: is_admin,
+  // };
 
   type getEmployeeByPagesProps = {
     page: number;

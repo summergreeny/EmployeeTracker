@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { Modal, Button } from "react-bootstrap";
 
 // This component is used to upload a CSV file to the server

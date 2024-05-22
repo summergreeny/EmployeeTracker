@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Home } from "./pages/Home";
 import { Dashboard } from "./pages/Dashboard";
 import { Role } from "./pages/Role.tsx";

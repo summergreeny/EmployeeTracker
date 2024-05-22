@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { ProfileMenu } from "../components/ProfileMenu";
 
 export function Dashboard() {

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CompanyContext } from "../context/CompanyContext";
-
+import { AxiosResponse } from "axios";
 import { Tables } from "../components/Tables";
 
 export function Role() {
@@ -39,6 +39,7 @@ export function Role() {
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
+    event?.preventDefault();
     setPage(newPage);
   };
 

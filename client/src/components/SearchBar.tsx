@@ -1,17 +1,12 @@
-import React, { useState } from "react";
-import { Employee } from "../context/CompanyContext";
+import React from "react";
 
 type SearchBarProps = {
-  employeeData: Employee[];
-  setTableData: React.Dispatch<React.SetStateAction<Employee[]>>;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
 export function SearchBar({
-  employeeData,
-  setTableData,
   search,
   setSearch,
   handleKeyDown,

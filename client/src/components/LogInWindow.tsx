@@ -1,4 +1,4 @@
-import React, { useState, useContext, FormEvent } from "react";
+import { useState, useContext, FormEvent } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 import { AuthContext } from "../context/AuthContext";

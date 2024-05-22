@@ -39,6 +39,8 @@ export function Department() {
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
+    //todo: fix any type
+    event && event.preventDefault();
     setPage(newPage);
   };
 

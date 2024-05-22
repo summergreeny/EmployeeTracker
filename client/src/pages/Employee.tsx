@@ -7,7 +7,7 @@ import { AddNewBtn } from "../components/AddNewBtn";
 import { SearchBar } from "../components/SearchBar";
 import "../styles.css";
 import { AxiosResponse } from "axios";
-
+// @ts-ignore
 export function Employee() {
   const header = [
     "Name",
@@ -43,6 +43,7 @@ export function Employee() {
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
+    event && event.preventDefault();
     setPage(newPage);
 
     // Fetch data for the new page
@@ -121,8 +122,6 @@ export function Employee() {
       <div className="d-flex">
         <FilterButton setTableData={setTableData} />
         <SearchBar
-          employeeData={employees}
-          setTableData={setTableData}
           search={search}
           setSearch={setSearch}
           handleKeyDown={handleKeyDown}
