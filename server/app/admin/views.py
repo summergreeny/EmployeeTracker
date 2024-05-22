@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, abort, request, redirect, render_template, url_for, Response
 from flask_login import current_user, login_required
+from sqlalchemy import and_
 from app import db
 from app.models import Department, Role, Employee
 import csv
+import json
 from werkzeug.utils import secure_filename
 
 from . import admin
@@ -32,6 +34,55 @@ def list_employees():
     employees = Employee.query.all()
     employees_data = [e.to_dict() for e in employees]
     return employees_data, 200
+
+@admin.route('/get_employees_by_pages', methods=['GET'])
+def get_employees_by_pages():
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('perPage', 10))
+    search_terms = request.args.getlist('search')  # Convert search string back to list
+    print(search_terms)
+    print("******************")
+
+    filter_condition=[]
+    for each in search_terms:
+        filter_by = (Employee.name.like(f"%{each}%") |
+                     Employee.email.like(f"%{each}%") |
+                     Employee.phone_number.like(f"%{each}%") |
+                     Employee.employStatus.like(f"%{each}%") |
+                     Department.name.like(f"%{each}%") |
+                     Role.name.like(f"%{each}%"))
+        filter_condition.append(filter_by)
+    
+    filtered_employees = Employee.query\
+    .join(Department, Employee.department_id == Department.id)\
+    .join(Role, Employee.role_id == Role.id)\
+    .filter(and_(*filter_condition)).all()
+    print("Filtered employees:")
+    print(filtered_employees)
+    total_records = len(filtered_employees)
+
+    start_index = (page - 1) * per_page if page >= 1 else 0 
+    end_index = start_index + per_page
+    print(start_index, end_index)
+    paginated_employees = filtered_employees[start_index:end_index]
+    employees_data = [e.to_dict() for e in paginated_employees]
+    return jsonify({"data": employees_data, "total_records":total_records}), 200
+
+
+
+
+    
+
+
+
+
+
+        
+
+
+
+
+
 
 
 @admin.route('/employees/<int:employee_id>', methods=['DELETE'])
@@ -185,12 +236,12 @@ def save_employee(data):
         existing_employee.name = name
         existing_employee.phone_number = phone_number
         existing_employee.employStatus = employee_status
-        existing_employee.is_admin = is_admin == 'TRUE'
+        existing_employee.is_admin = is_admin == 'true'
         existing_employee.department_id = save_department(department_name)
         existing_employee.role_id = save_role(role_name)
     
     else:
-        new_employee = Employee(name=name, email=email, phone_number=phone_number, employStatus=employee_status, is_admin=is_admin == 'TRUE' , department_id=save_department(department_name), role_id=save_role(role_name))
+        new_employee = Employee(name=name, email=email, phone_number=phone_number, employStatus=employee_status, is_admin=is_admin == 'true' , department_id=save_department(department_name), role_id=save_role(role_name))
         db.session.add(new_employee)
     db.session.commit()
 
@@ -235,7 +286,6 @@ def upload_csv():
             return jsonify({'error': 'Invalid file format. Please upload a CSV file.'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 #/employees/status?employment_status=All
 @admin.route('/employees/status', methods=['GET'])
 def get_employee_by_status():
@@ -256,15 +306,13 @@ def get_employee_by_status():
 def update_departments(department_id):
     data = request.get_json()
     print(f"Received data: {data}")
-    
-    # Assuming you meant to query the Department model, not Employee model
+
     department = Department.query.get(department_id)
     
     if not department:
         print(f"Department with id {department_id} not found.")
         return jsonify({'message': 'Department not found'}), 404
 
-    # Update fields if they exist in the input data
     if 'name' in data:
         department.name = data['name']
         print(f"Updated name to: {department.name}")
