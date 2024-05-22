@@ -47,11 +47,19 @@ export function EditEmployee({
   // Update state when the employee prop changes
   useEffect(() => {
     if (employee) {
-      setEmployeeInfo(employee);
+      setEmployeeInfo({
+        id: employee.id || 0,
+        name: employee.name || "",
+        email: employee.email || "",
+        password: employee.password || "",
+        phone_number: employee.phone_number || "",
+        department_name: employee.department_name || "",
+        role_name: employee.role_name || "",
+        employStatus: employee.employStatus || "",
+        is_admin: employee.is_admin || false,
+      });
     }
   }, [employee]);
-
-  // console.log(employeeInfo);
 
   const context = useContext(CompanyContext);
 
@@ -73,18 +81,20 @@ export function EditEmployee({
       is_admin: employeeInfo.is_admin || false, // Handle optional field
     };
 
-    console.log("New Employee");
-    console.log(employeeInfo);
+    console.log(requestBody);
+
     const endpoint =
       title === "Edit Employee"
         ? `http://127.0.0.1:5000/admin/employees/${employeeInfo.id}`
         : "http://127.0.0.1:5000/admin/newemployees";
+    console.log(endpoint);
 
-    // Send the request
     const request =
       title === "Edit Employee"
         ? axios.put(endpoint, requestBody)
         : axios.post(endpoint, requestBody);
+
+    console.log(request);
 
     request
       .then((res) => {
@@ -120,206 +130,149 @@ export function EditEmployee({
         </Modal.Header>
 
         <Modal.Body>
-          <div>
-            <Form>
-              <Modal.Body>
-                <div>
-                  <Form>
-                    {title === "Edit Employee" && (
-                      <>
-                        <Form.Group controlId="employeeName">
-                          <Form.Label>Name</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="Name"
-                            value={employeeInfo.name}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                name: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group controlId="employeeEmail">
-                          <Form.Label>Email address</Form.Label>
-                          <Form.Control
-                            type="email"
-                            placeholder="Enter email"
-                            value={employeeInfo.email}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                email: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group controlId="employeePhone">
-                          <Form.Label>Phone Number</Form.Label>
-                          <Form.Control
-                            type="phone"
-                            placeholder="Phone Number"
-                            value={employeeInfo.phone_number}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                phone_number: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group controlId="employeePassword">
-                          <Form.Label>Password</Form.Label>
-                          <Form.Control
-                            type="password"
-                            placeholder="Password"
-                            value={employeeInfo.password}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                password: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group controlId="employeeDepartment">
-                          <Form.Label>Department</Form.Label>
-                          <Form.Control
-                            as="select"
-                            name="department"
-                            value={employeeInfo.department_name}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                department_name: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="">Select department</option>
-                            {departments.map((department) => (
-                              <option
-                                key={department.id}
-                                value={department.name}
-                              >
-                                {department.name}
-                              </option>
-                            ))}
-                          </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="employeeRole">
-                          <Form.Label>Role</Form.Label>
-                          <Form.Control
-                            as="select"
-                            name="role"
-                            value={employeeInfo.role_name}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                role_name: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="">Select role</option>
-                            {roles.map((role) => (
-                              <option key={role.id} value={role.name}>
-                                {role.name}
-                              </option>
-                            ))}
-                          </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="employeeStatus">
-                          <Form.Label>Employment Status</Form.Label>
-                          <Form.Control
-                            as="select"
-                            name="employStatus"
-                            value={employeeInfo.employStatus}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                employStatus: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="">Select</option>
-                            <option value="New Hire">New Hire</option>
-                            <option value="Active Employee">
-                              Active Employee
-                            </option>
-                            <option value="Inactive Employee">
-                              Inactive Employee
-                            </option>
-                            <option value="Former Employee">
-                              Former Employee
-                            </option>
-                          </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="employeeIsAdmin">
-                          <Form.Label>
-                            Is This Employee An Administrator?
-                          </Form.Label>
-                          <Form.Control
-                            as="select"
-                            name="is_admin"
-                            value={employeeInfo.is_admin.toString()}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                is_admin: e.target.value === "true",
-                              })
-                            }
-                          >
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                          </Form.Control>
-                        </Form.Group>
-                      </>
-                    )}
-
-                    {/* {(title === "Edit Department" ||
-                      title === "Edit Roles") && (
-                      <>
-                        <Form.Group controlId="department_name">
-                          <Form.Label>Name</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="Name"
-                            value={employeeInfo.name}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                name: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group controlId="employeeEmail">
-                          <Form.Label>Email address</Form.Label>
-                          <Form.Control
-                            type="email"
-                            placeholder="Enter email"
-                            value={employeeInfo.email}
-                            onChange={(e) =>
-                              setEmployeeInfo({
-                                ...employeeInfo,
-                                email: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </Form.Group>
-                      </>
-                    )} */}
-                  </Form>
-                </div>
-              </Modal.Body>
-            </Form>
-          </div>
+          <Form>
+            <Modal.Body>
+              <Form.Group controlId="employeeName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Name"
+                  value={employeeInfo.name}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      name: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="employeeEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter email"
+                  value={employeeInfo.email}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      email: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="employeePhone">
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="phone"
+                  placeholder="Phone Number"
+                  value={employeeInfo.phone_number}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      phone_number: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="employeePassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  value={employeeInfo.password}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      password: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="employeeDepartment">
+                <Form.Label>Department</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="department"
+                  value={employeeInfo.department_name}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      department_name: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.name}>
+                      {department.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="employeeRole">
+                <Form.Label>Role</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="role"
+                  value={employeeInfo.role_name}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      role_name: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select role</option>
+                  {roles.map((role) => (
+                    <option key={role.id} value={role.name}>
+                      {role.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="employeeStatus">
+                <Form.Label>Employment Status</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="employStatus"
+                  value={employeeInfo.employStatus}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      employStatus: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select</option>
+                  <option value="New Hire">New Hire</option>
+                  <option value="Active Employee">Active Employee</option>
+                  <option value="Inactive Employee">Inactive Employee</option>
+                  <option value="Former Employee">Former Employee</option>
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="employeeIsAdmin">
+                <Form.Label>Is This Employee An Administrator?</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="is_admin"
+                  value={employeeInfo.is_admin.toString()}
+                  onChange={(e) =>
+                    setEmployeeInfo({
+                      ...employeeInfo,
+                      is_admin: e.target.value === "true",
+                    })
+                  }
+                >
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </Form.Control>
+              </Form.Group>
+            </Modal.Body>
+          </Form>
         </Modal.Body>
 
         <Modal.Footer>

@@ -63,18 +63,21 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   type getEmployeeByPagesProps = {
     page: number;
     perPage: number;
-    search: string[] | [];
+    search: string[];
   };
   const getEmployeeByPages = ({
     page,
     perPage,
     search,
   }: getEmployeeByPagesProps) => {
+    console.log("This is getEmployeeByPages");
+    console.log(page, perPage, search);
+    const searchString = search.join(",");
     return axios.get(`http://127.0.0.1:5000/admin/get_employees_by_pages`, {
       params: {
         page,
         perPage,
-        search: search,
+        search: searchString,
       },
     });
   };

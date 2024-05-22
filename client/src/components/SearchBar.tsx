@@ -4,29 +4,19 @@ import { Employee } from "../context/CompanyContext";
 type SearchBarProps = {
   employeeData: Employee[];
   setTableData: React.Dispatch<React.SetStateAction<Employee[]>>;
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
-export function SearchBar({ employeeData, setTableData }: SearchBarProps) {
-  const [search, setSearch] = useState(""); // This is the search query
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      const searchQuery = search.toLowerCase().split(" ");
-
-      const filteredEmployees = employeeData.filter((employee) => {
-        return searchQuery.every((term) => {
-          return Object.values(employee).some((value) => {
-            return String(value).toLowerCase().includes(term);
-          });
-        });
-      });
-
-      console.log("Filtered employees:", filteredEmployees);
-      setTableData(filteredEmployees); // Update the table data with the filtered employees
-
-      setSearch(""); // Clear the search bar
-    }
-  };
+export function SearchBar({
+  employeeData,
+  setTableData,
+  search,
+  setSearch,
+  handleKeyDown,
+}: SearchBarProps) {
+  // const [search, setSearch] = useState(""); // This is the search query
 
   return (
     <div className="App">
@@ -46,7 +36,6 @@ export function SearchBar({ employeeData, setTableData }: SearchBarProps) {
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      {/* Display search results here */}
     </div>
   );
 }

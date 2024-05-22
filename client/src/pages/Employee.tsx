@@ -24,6 +24,8 @@ export function Employee() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [tableData, setTableData] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [length, setLength] = useState(0);
   if (!context) {
     throw new Error("Department must be used within a DepartmentsProvider");
   }
@@ -33,6 +35,7 @@ export function Employee() {
     // Initialize tableData when context is available
     if (employees.length > 0) {
       setTableData(employees);
+      setLength(dataLength);
     }
   }, [employees]);
 
@@ -46,15 +49,41 @@ export function Employee() {
     getEmployeeByPages({
       page: newPage + 1,
       perPage: rowsPerPage,
-      search: [],
+      search: search.toLowerCase().split(" "),
     })
       .then((res: AxiosResponse) => {
-        // Update tableData state with the fetched data
         setTableData(res.data.data);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error("Error fetching page data:", error);
       });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const searchQuery = search.toLowerCase().split(" ");
+      getEmployeeByPages({
+        page: page,
+        perPage: rowsPerPage,
+        search: searchQuery,
+      })
+        .then((res: AxiosResponse) => {
+          // Update tableData state with the fetched data
+          console.log("res.data.data", res.data.data);
+          setLength(res.data.total_records);
+          setTableData(res.data.data);
+        })
+        .catch((error: unknown) => {
+          // Explicitly type the 'error' parameter as 'any'
+          console.error("Error fetching rows per page data:", error);
+        });
+
+      console.log("searchQuery", searchQuery);
+      console.log("search", search);
+      console.log("data", tableData);
+
+      setSearch(""); // Clear the search bar
+    }
   };
 
   const handleChangeRowsPerPage = (
@@ -65,12 +94,16 @@ export function Employee() {
     setPage(0);
 
     // Fetch data for the first page with the new rowsPerPage value
-    getEmployeeByPages({ page: 0, perPage: newRowsPerPage, search: [] })
+    getEmployeeByPages({
+      page: 0,
+      perPage: rowsPerPage,
+      search: search.toLowerCase().split(" "),
+    })
       .then((res: AxiosResponse) => {
         // Update tableData state with the fetched data
         setTableData(res.data.data);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error("Error fetching rows per page data:", error);
       });
   };
@@ -87,7 +120,13 @@ export function Employee() {
     <div style={{ position: "relative" }}>
       <div className="d-flex">
         <FilterButton setTableData={setTableData} />
-        <SearchBar employeeData={employees} setTableData={setTableData} />
+        <SearchBar
+          employeeData={employees}
+          setTableData={setTableData}
+          search={search}
+          setSearch={setSearch}
+          handleKeyDown={handleKeyDown}
+        />
       </div>
 
       <Tables
@@ -96,7 +135,7 @@ export function Employee() {
         tableName={"Employees"}
         page={page}
         rowsPerPage={rowsPerPage}
-        length={dataLength}
+        length={length}
         handleChangePage={handleChangePage}
         handleChangeRowsPerPage={handleChangeRowsPerPage}
       />

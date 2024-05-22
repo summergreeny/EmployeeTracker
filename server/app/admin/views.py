@@ -39,7 +39,8 @@ def list_employees():
 def get_employees_by_pages():
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('perPage', 10))
-    search_terms = request.args.getlist('search')  # Convert search string back to list
+    search_string = request.args.get('search', '')  # Get the search string
+    search_terms = search_string.split(',') if search_string else [] 
     print(search_terms)
     print("******************")
 
@@ -136,6 +137,7 @@ def update_employee(employee_id):
 @admin.route('/newemployees', methods=['POST'])
 def add_employee():
     data = request.get_json()
+    print(data)
 
     if not data:
         return jsonify({"error": "No input data provided"}), 400
