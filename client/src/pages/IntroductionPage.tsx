@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { CompanyContext, Employee } from "../context/CompanyContext.tsx";
@@ -105,7 +105,7 @@ export function IntroductionPage() {
                   <div className="text-center">
                     <strong>{member.name}</strong>
                     <br />
-                    <span>{member.role_name}</span>
+                    <span>{member.role}</span>
                   </div>
                 </Col>
               ))}
