@@ -32,7 +32,7 @@ export function FilterButton({
 
   const getFilterUser = (filter: string) => {
     axios
-      .get("http://127.0.0.1:5000/admin/employees/status", {
+      .get("http://127.0.0.1:30001/admin/employees/status", {
         params: {
           employee_status: filter,
         },

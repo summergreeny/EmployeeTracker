@@ -65,7 +65,7 @@ export function Tables({
 
   const deleteEmployee = (id: number) => {
     axios
-      .delete(`http://127.0.0.1:5000/admin/employees/${id}`)
+      .delete(`http://127.0.0.1:30001/admin/employees/${id}`)
       .then(() => {
         window.location.reload();
       })

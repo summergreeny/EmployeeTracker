@@ -50,7 +50,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     console.log(email, password);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/auth/login",
+        "http://127.0.0.1:30001/auth/login",
         { email, password },
         { withCredentials: true }
       );
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:5000/auth/logout",
+        "http://127.0.0.1:30001/auth/logout",
         {},
         { withCredentials: true }
       );

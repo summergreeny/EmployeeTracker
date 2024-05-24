@@ -55,8 +55,8 @@ export function EditInfo({ show, handleClose, title, content }: EditInfoProps) {
 
     const endpoint =
       title === "Department"
-        ? `http://127.0.0.1:5000/admin/departments/${contentInfo.id}`
-        : `http://127.0.0.1:5000/admin/roles/${contentInfo.id}`;
+        ? `http://127.0.0.1:30001/admin/departments/${contentInfo.id}`
+        : `http://127.0.0.1:30001/admin/roles/${contentInfo.id}`;
 
     const request = axios.put(endpoint, requestBody);
 

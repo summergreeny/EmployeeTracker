@@ -85,8 +85,8 @@ export function EditEmployee({
 
     const endpoint =
       title === "Edit Employee"
-        ? `http://127.0.0.1:5000/admin/employees/${employeeInfo.id}`
-        : "http://127.0.0.1:5000/admin/newemployees";
+        ? `http://127.0.0.1:30001/admin/employees/${employeeInfo.id}`
+        : "http://127.0.0.1:30001/admin/newemployees";
     console.log(endpoint);
 
     const request =

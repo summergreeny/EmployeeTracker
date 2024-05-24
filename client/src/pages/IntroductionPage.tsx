@@ -21,7 +21,7 @@ export function IntroductionPage() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/admin/get_employees_by_departments", {
+      .get("http://127.0.0.1:30001/admin/get_employees_by_departments", {
         params: { department_id: id },
       })
       .then((res) => {

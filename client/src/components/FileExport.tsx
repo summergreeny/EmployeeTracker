@@ -10,7 +10,7 @@ export function FileExport({ contentName }: FileExportProps) {
   const exportCSV = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/admin/export/${contentName}`,
+        `http://127.0.0.1:30001/admin/export/${contentName}`,
         {
           method: "GET",
         }

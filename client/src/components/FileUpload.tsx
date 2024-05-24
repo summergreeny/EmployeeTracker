@@ -26,7 +26,7 @@ export function FileUpload() {
       formData.append("file", selectedFile);
 
       try {
-        const response = await fetch("http://127.0.0.1:5000/admin/upload", {
+        const response = await fetch("http://127.0.0.1:30001/admin/upload", {
           method: "POST",
           body: formData,
         });

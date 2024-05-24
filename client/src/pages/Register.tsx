@@ -24,11 +24,14 @@ export function Register() {
       return;
     }
     try {
-      const response = await axios.post("http://127.0.0.1:5000/auth/register", {
-        name,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:30001/auth/register",
+        {
+          name,
+          email,
+          password,
+        }
+      );
       if (response.status === 201) {
         alert("Registration successful!");
         window.location.href = "/";

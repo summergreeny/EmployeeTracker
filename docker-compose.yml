@@ -1,6 +1,16 @@
 version: "3.8"
 
 services:
+  phpmyadmin:
+    image: phpmyadmin:5.2.0-apache
+    hostname: phpmyadmin
+    ports:
+      - 81:80/tcp
+    networks:
+      web:
+    environment:
+      - PMA_HOST=mysql
+
   db:
     image: mysql:5.7
     networks:
@@ -11,8 +21,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: employeeDatabase
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123456
     volumes:
       - mysql-data:/var/lib/mysql
 

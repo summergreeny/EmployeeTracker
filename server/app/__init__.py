@@ -51,6 +51,9 @@ def create_app(config_name=None):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
     logging.info(f"Using database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
 
     # Set session lifetime
@@ -61,6 +64,7 @@ def create_app(config_name=None):
                                  "headers": app.config['CORS_HEADERS'],
                                  "methods": app.config['CORS_METHODS']}})
 
+    CORS(app, resources={r"/*": {"origins": "http://localhost:30000"}})
 
     # Initialize LoginManager
     login_manager.init_app(app)

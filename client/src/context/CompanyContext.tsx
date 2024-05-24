@@ -76,7 +76,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     search,
   }: getEmployeeByPagesProps) => {
     const searchString = search.join(",");
-    return axios.get(`http://127.0.0.1:5000/admin/get_employees_by_pages`, {
+    return axios.get(`http://127.0.0.1:30001/admin/get_employees_by_pages`, {
       params: {
         page,
         perPage,
@@ -96,7 +96,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     perPage,
     infoContent,
   }: getInfoByPagesProps) => {
-    return axios.get("http://127.0.0.1:5000/admin/get_info_by_pages", {
+    return axios.get("http://127.0.0.1:30001/admin/get_info_by_pages", {
       params: {
         page,
         perPage,
@@ -107,7 +107,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/admin/get_info_by_pages", {
+      .get("http://127.0.0.1:30001/admin/get_info_by_pages", {
         params: { page: 0, perPage: 10, infoContent: "departments" },
       })
       .then((res) => {
@@ -118,7 +118,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
       });
 
     axios
-      .get("http://127.0.0.1:5000/admin/get_info_by_pages", {
+      .get("http://127.0.0.1:30001/admin/get_info_by_pages", {
         params: { page: 0, perPage: 10, infoContent: "roles" },
       })
       .then((res) => {
@@ -129,7 +129,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
       });
 
     axios
-      .get(`http://127.0.0.1:5000/admin/get_employees_by_pages`, {
+      .get(`http://127.0.0.1:30001/admin/get_employees_by_pages`, {
         params: {
           page: 0,
           perPage: 10,
