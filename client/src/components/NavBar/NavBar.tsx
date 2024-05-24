@@ -10,6 +10,7 @@ type NavBarProps = {
 };
 
 export function NavBar({ isLoggedIn }: NavBarProps) {
+  console.log("Nav  bar", isLoggedIn);
   const authContext = useContext(AuthContext);
 
   const [isOpen, setisOpen] = useState(false);
@@ -27,6 +28,7 @@ export function NavBar({ isLoggedIn }: NavBarProps) {
   }
 
   const { logout, userInfo } = authContext;
+  console.log(userInfo);
   return (
     <Navbar sticky="top" className="bg-white shadow-sm mb-3">
       <Container>

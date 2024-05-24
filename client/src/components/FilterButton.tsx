@@ -17,9 +17,13 @@ type Employees = {
 
 type FilterButtonProps = {
   setTableData: React.Dispatch<React.SetStateAction<Employees[]>>;
+  setEmployeeStatusOne: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function FilterButton({ setTableData }: FilterButtonProps) {
+export function FilterButton({
+  setTableData,
+  setEmployeeStatusOne,
+}: FilterButtonProps) {
   const [filter, setFilter] = useState("All");
   const handleFilterChange = (role: string) => {
     setFilter(role);
@@ -36,6 +40,7 @@ export function FilterButton({ setTableData }: FilterButtonProps) {
       .then((response) => {
         console.log(response.data); // Handle the response data
         setTableData(response.data); // Update tableData state with the response data
+        setEmployeeStatusOne(true);
       })
       .catch((error) => {
         console.error("There was an error!", error);

@@ -26,6 +26,8 @@ export function Employee() {
   const [tableData, setTableData] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [length, setLength] = useState(0);
+  const [employeeStatusOn, setEmployeeStatusOn] = useState(false);
+
   if (!context) {
     throw new Error("Department must be used within a DepartmentsProvider");
   }
@@ -54,10 +56,14 @@ export function Employee() {
     })
       .then((res: AxiosResponse) => {
         setTableData(res.data.data);
+        setPage(newPage);
       })
       .catch((error: unknown) => {
         console.error("Error fetching page data:", error);
       });
+    console.log("searchQuery", search.toLowerCase().split(" "));
+    console.log("search", search);
+    console.log("data", tableData);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -73,6 +79,8 @@ export function Employee() {
           console.log("res.data.data", res.data.data);
           setLength(res.data.total_records);
           setTableData(res.data.data);
+          setPage(0);
+          setRowsPerPage(rowsPerPage);
         })
         .catch((error: unknown) => {
           // Explicitly type the 'error' parameter as 'any'
@@ -83,7 +91,7 @@ export function Employee() {
       console.log("search", search);
       console.log("data", tableData);
 
-      setSearch(""); // Clear the search bar
+      // setSearch(""); // Clear the search bar
     }
   };
 
@@ -97,7 +105,7 @@ export function Employee() {
     // Fetch data for the first page with the new rowsPerPage value
     getEmployeeByPages({
       page: page,
-      perPage: rowsPerPage,
+      perPage: newRowsPerPage,
       search: search.toLowerCase().split(" "),
     })
       .then((res: AxiosResponse) => {
@@ -107,6 +115,7 @@ export function Employee() {
       .catch((error: unknown) => {
         console.error("Error fetching rows per page data:", error);
       });
+    // setSearch("");
   };
 
   if (!context) {
@@ -120,12 +129,17 @@ export function Employee() {
   return (
     <div style={{ position: "relative" }}>
       <div className="d-flex">
-        <FilterButton setTableData={setTableData} />
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-          handleKeyDown={handleKeyDown}
+        <FilterButton
+          setTableData={setTableData}
+          setEmployeeStatusOne={setEmployeeStatusOn}
         />
+        {!employeeStatusOn && (
+          <SearchBar
+            search={search}
+            setSearch={setSearch}
+            handleKeyDown={handleKeyDown}
+          />
+        )}
       </div>
 
       <Tables
@@ -137,6 +151,7 @@ export function Employee() {
         length={length}
         handleChangePage={handleChangePage}
         handleChangeRowsPerPage={handleChangeRowsPerPage}
+        showEmployeeStatus={employeeStatusOn}
       />
 
       {show && (

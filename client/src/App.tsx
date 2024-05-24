@@ -19,7 +19,7 @@ function App() {
   }
 
   const { isLoggedIn } = authContext;
-
+  console.log(isLoggedIn);
   return (
     <div>
       <NavBar isLoggedIn={isLoggedIn} />

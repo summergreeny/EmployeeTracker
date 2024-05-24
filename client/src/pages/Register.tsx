@@ -8,10 +8,19 @@ export function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      alert("Invalid email address");
       return;
     }
     try {
@@ -20,7 +29,7 @@ export function Register() {
         email,
         password,
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("Registration successful!");
         window.location.href = "/";
       }

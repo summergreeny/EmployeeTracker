@@ -1,4 +1,4 @@
-#!/Users/yilinliu/Documents/OdinProject/EmployeeTracker/server/new_venv/bin/python3.12
+#!/Users/yilinliu/Documents/OdinProject/EmployeeTracker/server/.venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

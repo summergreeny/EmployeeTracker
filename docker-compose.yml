@@ -3,6 +3,8 @@ version: "3.8"
 services:
   db:
     image: mysql:5.7
+    networks:
+      - web
     platform: linux/x86_64
     container_name: mysql
     ports:
@@ -19,6 +21,23 @@ services:
       context: .
       dockerfile: Dockerfile
     image: react-flask-app-api
+    ports:
+      - "30001:5000"
+    networks:
+      - web
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    image: client
+    ports:
+      - "30000:80"
+    networks:
+      - web
 
 volumes:
   mysql-data:
+
+networks:
+  web:

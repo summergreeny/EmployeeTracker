@@ -1,13 +1,6 @@
 from flask import request, jsonify, session
-from flask_login import login_required, login_user, logout_user
-from flask_jwt_extended import (
-    JWTManager,
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    jwt_required,
-)
-from datetime import datetime, timedelta
+from flask_login import login_required, login_user, logout_user,current_user
+from flask_restful import Resource
 from app.models import Employee
 from app import db
 
@@ -20,18 +13,18 @@ def register():
     Handle requests to the /register route Add an employee to the database 
     """
     data = request.get_json()
-    email_data = data['email']
-    password_data = data['password']
-    name_data = data['name']
+    email = data.get('email')
+    password = data.get('password')
+    name_data = data.get('name')
 
-    if Employee.query.filter_by(email=email_data).first():
-        return jsonify({'message': 'User already exists!'}), 400  
+    if Employee.query.filter_by(email=email).first():
+        return jsonify({'message': 'User already exists, email already registered'}), 400  
 
-    employee = Employee(email=email_data,name=name_data)
-    employee.password = password_data
-    db.session.add(employee)
+    new_employee = Employee(email=email,name=name_data)
+    new_employee.password = password
+    db.session.add(new_employee)
     db.session.commit()
-    return jsonify({'message': 'Registration successful'}), 200
+    return jsonify({'message': 'Registration successful'}), 201
    
 
 @auth.route('/login', methods=['POST'])
@@ -42,42 +35,42 @@ def login():
     data = request.json
     email = data.get('email')
     password = data.get('password')
+    print(f"Email: {email}, Password: {password}")
+    if None in (email, password):
+
+        return jsonify(msg="Invalid Data"), 401
 
     employee = Employee.query.filter_by(email=email).first()
     if employee is not None and employee.verifyPassword(password):
         login_user(employee, remember=True)
-
-        # Generate an access token
-        access_token = create_access_token(identity=employee.email)
-        refresh_token = create_refresh_token(identity=employee.email)
-        session['refresh_token'] = refresh_token
         user_info = employee.to_dict()
-        return jsonify({"access_token": access_token, "user": user_info}), 200
+        response = jsonify({ 'message': "success","user": user_info})
+        response.set_cookie('email', employee.email, max_age=3600)
+        # session["email"] = employee.email
+        
+        return response, 200
     else:
         return jsonify({'message': 'Invalid email or password'}), 401
 
-@auth.route('/logout',methods=['POST'])
-# @jwt_required() 
+# class CheckSession(Resource):
+#   def get(self):
+#     user = Employee.query.filter(Employee.email == session.get('user_id')).first()
+#     if user:
+#       return user.to_dict(), 200
+#     return {'error': 'Unauthorized'}, 401
+
+@auth.route('/logout', methods=['POST'])
+@login_required
 def logout():
-    """
-    Handle requests to the /logout route
-    Log an employee out through the logout form
-    """
-    response = jsonify({"message": "Logged out"})
+    print(f"Logging out user: {current_user}")
     logout_user()
-    session.clear()  # Remove all keys from the session
-    response.delete_cookie('session')
-    return response
+    print(f"User after logout: {current_user}")
+    # if session.get('email'):
+    #     session['email'] = None
+    # session.pop('email', None) 
+    # session.clear()
+    # session.pop(current_user.email, None)
+    response = jsonify({'message': 'Logged out'})
+    response.set_cookie('user_id', '', expires=0)  # Expire the cookie immediately
+    return response, 200
 
-@auth.route('check-token', methods=['GET'])
-# @jwt_required()
-def check_token():
-    """
-    Handle requests to the /check-token route to check the validity of the access token.
-    """
-    refresh_token = session.get('refresh_token')
-    if not refresh_token:
-        return jsonify({"message": "Invalid refresh token"}), 401
-
-    access_token = create_access_token(identity=refresh_token)
-    return jsonify({"access_token": access_token})

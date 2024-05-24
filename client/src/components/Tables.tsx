@@ -38,6 +38,7 @@ type TablesProps = {
   handleChangeRowsPerPage: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
+  showEmployeeStatus?: boolean;
 };
 
 export function Tables({
@@ -49,6 +50,7 @@ export function Tables({
   length,
   handleChangePage,
   handleChangeRowsPerPage,
+  showEmployeeStatus,
 }: TablesProps) {
   console.log(header, data, tableName, page, rowsPerPage, length);
 
@@ -231,11 +233,27 @@ export function Tables({
                     </td>
                   </tr>
                 ))
-              : data.map((item) => (
+              : tableName === "Departments"
+              ? data.map((item) => (
                   <tr key={item.id}>
                     <td>
                       <Link to={`/department/${item.id}`}>{item.name}</Link>
                     </td>
+                    <td>{item.description}</td>
+                    <td>{item.employee_count}</td>
+                    <td>
+                      <Button
+                        variant="warning"
+                        onClick={() => handleEditInfo(item.id)}
+                      >
+                        Edit
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              : data.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
                     <td>{item.description}</td>
                     <td>{item.employee_count}</td>
                     <td>
@@ -252,13 +270,15 @@ export function Tables({
           <tfoot>
             <tr>
               <td colSpan={header.length} style={{ textAlign: "right" }}>
-                <Pagination
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  length={length}
-                  handleChangePage={handleChangePage}
-                  handleChangeRowsPerPage={handleChangeRowsPerPage}
-                />{" "}
+                {!showEmployeeStatus && (
+                  <Pagination
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    length={length}
+                    handleChangePage={handleChangePage}
+                    handleChangeRowsPerPage={handleChangeRowsPerPage}
+                  />
+                )}
               </td>
             </tr>
           </tfoot>

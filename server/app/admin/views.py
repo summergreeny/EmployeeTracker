@@ -15,8 +15,6 @@ def get_employee_by_departments():
     employees = Employee.query.filter_by(department_id=department).all()
     return jsonify([e.to_dict() for e in employees]), 200
 
-    
-
 # paginate method from SQLAlchemy to handle pagination directly in the query
 @admin.route('/get_info_by_pages', methods=['GET'])
 def get_info_by_pages():
@@ -40,6 +38,7 @@ def get_info_by_pages():
 def get_employees_by_pages():
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('perPage', 10))
+    print("get_employees_by_pages",page,per_page)
     search_string = request.args.get('search', '')  # Get the search string
     search_terms = search_string.split(',') if search_string else [] 
 
@@ -218,13 +217,15 @@ def save_employee(data):
         existing_employee.name = name
         existing_employee.phone_number = phone_number
         existing_employee.employStatus = employee_status
-        existing_employee.is_admin = is_admin == 'true'
+        existing_employee.is_admin = is_admin =="True"
         existing_employee.department_id = save_department(department_name)
         existing_employee.role_id = save_role(role_name)
+        print(f"Updated employee: {existing_employee} with new data.{existing_employee.is_admin}")
     
     else:
-        new_employee = Employee(name=name, email=email, phone_number=phone_number, employStatus=employee_status, is_admin=is_admin == 'true' , department_id=save_department(department_name), role_id=save_role(role_name))
+        new_employee = Employee(name=name, email=email, phone_number=phone_number, employStatus=employee_status, is_admin=is_admin == 'True' , department_id=save_department(department_name), role_id=save_role(role_name))
         db.session.add(new_employee)
+        print(f"Added new employee: {new_employee}")
     db.session.commit()
 
 
@@ -268,6 +269,7 @@ def upload_csv():
             return jsonify({'error': 'Invalid file format. Please upload a CSV file.'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 #/employees/status?employment_status=All
 @admin.route('/employees/status', methods=['GET'])
 def get_employee_by_status():
@@ -282,6 +284,8 @@ def get_employee_by_status():
         employees = Employee.query.filter_by(employStatus=employee_status).all()
 
     employees_data = [e.to_dict() for e in employees]
+    print("employeedara!!!")
+    print(employees_data)
     return employees_data, 200
 
 @admin.route('/departments/<int:department_id>', methods=['PUT'])

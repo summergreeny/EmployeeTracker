@@ -37,7 +37,7 @@ def populate_db():
                 'name': 'John Doe',
                 'password': '123456',
                 'phone_number': '123-456-7890',
-                'employStatus': 'active',
+                'employStatus': 'New Hire',
                 'department_id': 1,
                 'role_id': 1,
                 'is_admin': False
@@ -46,7 +46,7 @@ def populate_db():
                 'email': 'jane@example.com',
                 'name': 'Jane Smith',
                 'password': '123456',
-                'employStatus': 'active',
+                'employStatus': 'New Hire',
                 'department_id': 2,
                 'role_id': 2,
                 'is_admin': False
@@ -56,7 +56,7 @@ def populate_db():
                 'name': 'Admin User',
                 'password': '123456',
                 'phone_number': '555-555-5555',
-                'employStatus': 'active',
+                'employStatus': 'New Hire',
                 'department_id': 1,
                 'role_id': 1,
                 'is_admin': True
@@ -66,7 +66,7 @@ def populate_db():
                 'name': 'Alice Johnson',
                 'password': '123456',
                 'phone_number': '111-222-3333',
-                'employStatus': 'active',
+                'employStatus': 'Former Employee',
                 'department_id': 2,
                 'role_id': 2,
                 'is_admin': False
@@ -76,7 +76,7 @@ def populate_db():
                 'name': 'Bob Brown',
                 'password': '123456',
                 'phone_number': '444-555-6666',
-                'employStatus': 'active',
+                'employStatus': 'Former Employee',
                 'department_id': 1,
                 'role_id': 2,
                 'is_admin': False
@@ -86,7 +86,7 @@ def populate_db():
                 'name': 'Sarah Lee',
                 'password': '123456',
                 'phone_number': '777-888-9999',
-                'employStatus': 'active',
+                'employStatus': 'Former Employee',
                 'department_id': 2,
                 'role_id': 1,
                 'is_admin': False
@@ -96,7 +96,7 @@ def populate_db():
                 'name': 'David Clark',
                 'password': '123456',
                 'phone_number': '123-987-6543',
-                'employStatus': 'active',
+                'employStatus': 'Former Employee',
                 'department_id': 1,
                 'role_id': 1,
                 'is_admin': False
@@ -106,7 +106,7 @@ def populate_db():
                 'name': 'Emily Taylor',
                 'password': '123456',
                 'phone_number': '555-123-4567',
-                'employStatus': 'active',
+                'employStatus': 'Inactive Employee',
                 'department_id': 2,
                 'role_id': 2,
                 'is_admin': False
@@ -116,7 +116,7 @@ def populate_db():
                 'name': 'Michael Martinez',
                 'password': '123456',
                 'phone_number': '777-999-1111',
-                'employStatus': 'active',
+                'employStatus': 'Inactive Employee',
                 'department_id': 1,
                 'role_id': 1,
                 'is_admin': False
@@ -126,7 +126,7 @@ def populate_db():
                 'name': 'Laura White',
                 'password': '123456',
                 'phone_number': '999-888-7777',
-                'employStatus': 'active',
+                'employStatus': 'Inactive Employee',
                 'department_id': 2,
                 'role_id': 1,
                 'is_admin': False
@@ -136,7 +136,7 @@ def populate_db():
                 'name': 'Yilin Liu-Ruiz',
                 'password': '123456',
                 'phone_number': '999-888-7777',
-                'employStatus': 'active',
+                'employStatus': 'Activate Employee',
                 'department_id': 2,
                 'role_id': 1,
                 'is_admin': True

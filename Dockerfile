@@ -13,6 +13,7 @@ RUN apt-get update \
 WORKDIR /app
 
 # Copy the application code and requirements file to the container
+
 COPY server /app
 COPY server/run.py /app/run.py
 COPY server/config.py /app/
@@ -21,6 +22,10 @@ COPY server/requirements.txt /app/requirements.txt
 # Install Python dependencies
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
+
+# RUN flask    db init && \
+#     flask    db migrate && \
+#     flask    db upgrade
 
 # Define environment variables
 ENV FLASK_ENV=development \

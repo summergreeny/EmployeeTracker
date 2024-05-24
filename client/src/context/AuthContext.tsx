@@ -19,7 +19,6 @@ export type User = {
 };
 
 type AuthContextType = {
-  accessToken: string | null;
   isLoggedIn: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -33,25 +32,13 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [accessToken, setAccessToken] = useState<string | null>(
-    localStorage.getItem("accessToken")
-  );
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!accessToken);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<User | null>(null);
 
   useEffect(() => {
-    const storedAccessToken = localStorage.getItem("accessToken");
     const storedUserInfo = localStorage.getItem("userInfo");
 
     console.log(storedUserInfo);
-
-    if (storedAccessToken) {
-      setAccessToken(storedAccessToken);
-      setIsLoggedIn(true);
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${storedAccessToken}`;
-    }
 
     if (storedUserInfo) {
       setUserInfo(JSON.parse(storedUserInfo));
@@ -59,20 +46,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const login = async (email: string, password: string) => {
+    console.log("login");
+    console.log(email, password);
     try {
       const response = await axios.post(
         "http://127.0.0.1:5000/auth/login",
         { email, password },
         { withCredentials: true }
       );
-      setAccessToken(response.data.access_token);
+      console.log(response.data);
       setIsLoggedIn(true);
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-      localStorage.setItem("accessToken", response.data.access_token);
       setUserInfo(JSON.parse(localStorage.getItem("userInfo") || "null"));
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.access_token}`;
     } catch (error) {
       console.error("Login failed:", error);
       alert("Login failed. Please check your credentials and try again.");
@@ -86,12 +71,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         {},
         { withCredentials: true }
       );
-      setAccessToken(null);
       setIsLoggedIn(false);
       setUserInfo(null);
       localStorage.removeItem("userInfo");
-      localStorage.removeItem("accessToken");
-      delete axios.defaults.headers.common["Authorization"];
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -99,9 +81,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   console;
   return (
-    <AuthContext.Provider
-      value={{ accessToken, login, logout, isLoggedIn, userInfo }}
-    >
+    <AuthContext.Provider value={{ login, logout, isLoggedIn, userInfo }}>
       {children}
     </AuthContext.Provider>
   );

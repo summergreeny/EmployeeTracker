@@ -1,11 +1,14 @@
 # third-party imports
 from flask import Flask
+from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from datetime import timedelta
+import logging
 # local imports
 from config import app_config
 
@@ -13,6 +16,18 @@ from config import app_config
 db = SQLAlchemy()
 # create a LoginManager object and initialize it 
 login_manager = LoginManager()
+
+def check_db_connection(app):
+    """
+    Check the connection to the database and print a success message if connected.
+    """
+    try:
+        with app.app_context():
+            with db.engine.connect() as connection:
+                    connection.execute(text('SELECT 1'))
+        print(f"Successfully connected to the database with URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    except Exception as e:
+        print(f"Failed to connect to the database. Error: {e}")
 
 
 def create_app(config_name=None):
@@ -29,13 +44,14 @@ def create_app(config_name=None):
 
     if config_name is None:
         config_name = "development"  # Set a default configuration name
-
+    print(f"Using configuration: {config_name}")
     # crete a Flask app instance
     # look for instance configuration files relative to the instance folder. 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     db.init_app(app)
+    logging.info(f"Using database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
 
     # Set session lifetime
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
@@ -50,9 +66,6 @@ def create_app(config_name=None):
     login_manager.init_app(app)
     login_manager.login_message = "You must be logged in to access this page."
     login_manager.login_view = "auth.login"
-    # Initialize JWTManager
-    jwt = JWTManager(app)
-
 
     # created a migrate object which will allow us to run migrations using Flask-Migrate
     migrate = Migrate(app, db)
@@ -72,4 +85,23 @@ def create_app(config_name=None):
     @app.route('/ping')
     def ping():
         return 'pong'
+
+    # Check the database connection
+    check_db_connection(app)
+
     return app
+
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return jsonify(message="please log in"), 401
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    from .models import Employee
+    user = Employee.query.get(int(user_id))
+    return user
+
+def configure_logging():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
